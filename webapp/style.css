@@ -1,0 +1,277 @@
+:root {
+  --bg: #0f5132;
+  --felt: #15603b;
+  --card: #fafafa;
+  --accent: #ffd54f;
+  --text: #f1f1f1;
+  --red: #d32f2f;
+  --black: #222;
+}
+
+* { box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
+
+body {
+  margin: 0;
+  font-family: -apple-system, "Segoe UI", Tahoma, sans-serif;
+  background: var(--bg);
+  color: var(--text);
+  user-select: none;
+}
+
+#app { max-width: 480px; margin: 0 auto; min-height: 100vh; position: relative; }
+
+.screen { display: none; padding: 16px; min-height: 100vh; }
+.screen.active { display: block; }
+
+h1 { text-align: center; color: var(--accent); margin-top: 24px; }
+
+.balance {
+  text-align: center;
+  background: rgba(0,0,0,.25);
+  padding: 8px;
+  border-radius: 10px;
+  margin: 12px 0;
+}
+
+.menu { display: flex; flex-direction: column; gap: 12px; margin-top: 24px; }
+
+.btn {
+  background: var(--accent);
+  color: #222;
+  border: none;
+  border-radius: 12px;
+  padding: 14px;
+  font-size: 16px;
+  font-weight: bold;
+  cursor: pointer;
+}
+.btn:active { transform: scale(.98); }
+.btn.secondary { background: #1976d2; color: #fff; }
+.btn.small { padding: 12px; font-size: 14px; }
+.btn.tiny { padding: 6px 10px; font-size: 12px; border-radius: 8px; background: rgba(255,255,255,.2); color: #fff; }
+
+.join-row { display: flex; gap: 8px; }
+.join-row input {
+  flex: 1; padding: 12px; border-radius: 10px; border: none;
+  font-size: 18px; text-align: center; letter-spacing: 4px;
+}
+
+.msg { text-align: center; margin-top: 14px; min-height: 20px; color: var(--accent); }
+
+/* میز */
+.table-top { display: flex; justify-content: space-between; align-items: center; margin-bottom: 8px; }
+.status { font-size: 14px; }
+
+.board {
+  position: relative;
+  background: var(--felt);
+  border-radius: 50%;
+  width: 100%;
+  aspect-ratio: 1 / 1;
+  max-width: 440px;
+  margin: 12px auto;
+  box-shadow: inset 0 0 40px rgba(0,0,0,.4);
+}
+
+.seat {
+  position: absolute;
+  background: rgba(0,0,0,.35);
+  border-radius: 10px;
+  padding: 6px 10px;
+  font-size: 13px;
+  min-width: 70px;
+  text-align: center;
+}
+.seat.active { outline: 3px solid var(--accent); }
+.seat-top { top: 6px; left: 50%; transform: translateX(-50%); }
+.seat-bottom { bottom: 6px; left: 50%; transform: translateX(-50%); }
+.seat-left { left: 6px; top: 50%; transform: translateY(-50%); }
+.seat-right { right: 6px; top: 50%; transform: translateY(-50%); }
+.seat .tricks { display: block; font-size: 11px; opacity: .8; }
+
+.center { position: absolute; top: 50%; left: 50%; transform: translate(-50%,-50%); width: 60%; }
+
+.trick-area { display: flex; flex-wrap: wrap; gap: 4px; justify-content: center; min-height: 60px; }
+.trick-card {
+  background: var(--card); color: #000;
+  border-radius: 6px; width: 38px; height: 54px;
+  display: flex; align-items: center; justify-content: center;
+  font-size: 18px; font-weight: bold; box-shadow: 0 2px 4px rgba(0,0,0,.3);
+}
+.trick-card.red { color: var(--red); }
+
+.hakem-info { text-align: center; margin-top: 8px; font-size: 13px; color: var(--accent); }
+
+/* دست بازیکن */
+.hand {
+  display: flex; flex-wrap: wrap; gap: 4px; justify-content: center;
+  margin-top: 12px; padding-bottom: 80px;
+}
+.card {
+  background: var(--card); color: #000;
+  border-radius: 8px; width: 46px; height: 64px;
+  display: flex; flex-direction: column; align-items: center; justify-content: center;
+  font-weight: bold; font-size: 18px; cursor: pointer;
+  box-shadow: 0 2px 5px rgba(0,0,0,.35);
+  transition: transform .1s;
+}
+.card.red { color: var(--red); }
+.card.playable:hover { transform: translateY(-8px); }
+.card.disabled { opacity: .45; cursor: not-allowed; }
+
+/* انتخاب حکم */
+.suit-picker { text-align: center; margin-top: 16px; }
+.suit-picker .hint { margin-bottom: 8px; }
+.suits { display: flex; gap: 12px; justify-content: center; }
+.suit {
+  width: 56px; height: 56px; border-radius: 50%;
+  border: none; font-size: 26px; cursor: pointer;
+  background: #fff; color: #000;
+}
+.suit[data-suit="hearts"], .suit[data-suit="diamonds"] { color: var(--red); }
+
+.hidden { display: none !important; }
+
+/* لیدربورد و تاریخچه */
+.lb-list, .hist-list { list-style: none; padding: 0; margin: 12px 0; }
+.lb-list li, .hist-list li {
+  background: rgba(0,0,0,.25);
+  border-radius: 10px;
+  padding: 10px 14px;
+  margin-bottom: 8px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  font-size: 14px;
+}
+.lb-list li .rank { color: var(--accent); font-weight: bold; margin-left: 8px; }
+.lb-list li .stat { opacity: .85; font-size: 12px; }
+.hist-list li .result { font-weight: bold; }
+.hist-list li .win { color: #4caf50; }
+.hist-list li .lose { color: var(--red); }
+
+/* لودینگ */
+.loading {
+  position: fixed; inset: 0; z-index: 999;
+  background: rgba(0,0,0,.6);
+  display: flex; flex-direction: column;
+  align-items: center; justify-content: center;
+  transition: opacity .2s;
+}
+.loading.hidden { display: none; }
+.spinner {
+  width: 40px; height: 40px;
+  border: 4px solid rgba(255,255,255,.2);
+  border-top-color: var(--accent);
+  border-radius: 50%;
+  animation: spin .6s linear infinite;
+}
+@keyframes spin { to { transform: rotate(360deg); } }
+.loading-text { margin-top: 12px; color: var(--accent); font-size: 14px; }
+
+/* فن دست (کارت‌های روی هم) */
+.hand {
+  display: flex;
+  justify-content: center;
+  margin-top: 10px;
+  padding: 0 16px 80px;
+  overflow-x: auto;
+  overflow-y: visible;
+}
+.card {
+  flex: 0 0 auto;
+  width: 48px;
+  height: 68px;
+  margin-left: -20px;
+  position: relative;
+  border-radius: 6px;
+  border: 1px solid #ddd;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  font-weight: bold;
+  background: var(--card);
+  color: #000;
+  cursor: pointer;
+  box-shadow: 0 2px 5px rgba(0,0,0,.35);
+  transition: transform .12s, z-index .12s;
+  z-index: 1;
+  user-select: none;
+}
+.card:first-child { margin-left: 0; }
+.card .rank { font-size: 20px; line-height: 1; }
+.card .suit { font-size: 14px; line-height: 1; margin-top: 2px; }
+.card.red .rank, .card.red .suit { color: var(--red); }
+.card.playable { cursor: pointer; }
+.card.playable:active { transform: translateY(-14px) scale(1.05); z-index: 20; }
+.card.disabled { opacity: .5; cursor: not-allowed; }
+
+/* کارت‌های روی میز (trick) */
+.trick-area {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 3px;
+  justify-items: center;
+  align-items: center;
+  min-height: 80px;
+  padding: 4px;
+}
+.trick-card {
+  background: var(--card); color: #000;
+  border-radius: 5px; width: 34px; height: 48px;
+  display: flex; flex-direction: column;
+  align-items: center; justify-content: center;
+  font-size: 14px; font-weight: bold;
+  box-shadow: 0 2px 4px rgba(0,0,0,.3);
+  border: 1px solid #ddd;
+}
+.trick-card .rank { font-size: 14px; line-height: 1; }
+.trick-card .suit { font-size: 11px; line-height: 1; margin-top: 1px; }
+.trick-card.red .rank, .trick-card.red .suit { color: var(--red); }
+
+/* بهبود انتخاب حکم */
+.suit-picker {
+  position: fixed;
+  bottom: 0; left: 0; right: 0;
+  background: rgba(15,81,50,.95);
+  padding: 20px;
+  border-radius: 20px 20px 0 0;
+  text-align: center;
+  z-index: 50;
+  animation: slideUp .25s ease-out;
+}
+@keyframes slideUp {
+  from { transform: translateY(100%); }
+  to { transform: translateY(0); }
+}
+.suit-picker .hint { margin-bottom: 12px; font-size: 16px; }
+.suit {
+  width: 64px; height: 64px; border-radius: 50%;
+  border: none; font-size: 30px; cursor: pointer;
+  background: #fff; color: #000;
+  box-shadow: 0 2px 8px rgba(0,0,0,.3);
+  transition: transform .1s;
+}
+.suit:active { transform: scale(.92); }
+.suit[data-suit="hearts"], .suit[data-suit="diamonds"] { color: var(--red); }
+
+/* شمارنده برنده کد */
+.round-result {
+  position: fixed;
+  inset: 0; z-index: 60;
+  background: rgba(0,0,0,.7);
+  display: flex; flex-direction: column;
+  align-items: center; justify-content: center;
+  animation: fadeIn .3s;
+}
+@keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
+.round-result .title { font-size: 28px; margin-bottom: 8px; }
+.round-result .sub { font-size: 16px; opacity: .9; }
+.round-result .btn-continue {
+  margin-top: 20px; padding: 12px 32px;
+  background: var(--accent); color: #222;
+  border: none; border-radius: 12px;
+  font-size: 18px; font-weight: bold; cursor: pointer;
+}
+.round-result.hidden { display: none; }

@@ -1,0 +1,91 @@
+<!DOCTYPE html>
+<html lang="fa" dir="rtl">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
+  <title>حکم 🃏</title>
+  <script src="https://telegram.org/js/telegram-web-app.js"></script>
+  <link rel="stylesheet" href="style.css" />
+</head>
+<body>
+  <div id="loading" class="loading hidden">
+    <div class="spinner"></div>
+    <div class="loading-text">لطفاً صبر کنید...</div>
+  </div>
+  <div id="app">
+    <!-- صفحه لابی -->
+    <section id="lobby" class="screen active">
+      <h1>بازی حکم 🃏</h1>
+      <div class="balance">موجودی: <span id="coinBalance">۰</span> 🪙</div>
+      <div class="menu">
+        <button id="btnPublic" class="btn">🎲 مچ‌میکینگ عمومی</button>
+        <button id="btnPrivate" class="btn">🔐 ساخت اتاق خصوصی</button>
+        <div id="joinRow" class="join-row hidden">
+          <input id="codeInput" placeholder="کد ۶ رقمی" maxlength="6" inputmode="numeric" />
+          <button id="btnJoinCode" class="btn small">ورود</button>
+        </div>
+        <button id="btnBuy" class="btn secondary">⭐ خرید سکه</button>
+        <button id="btnLeaderboard" class="btn small">🏆 لیدربورد</button>
+        <button id="btnHistory" class="btn small">📜 تاریخچه</button>
+      </div>
+      <div id="lobbyMsg" class="msg"></div>
+    </section>
+
+    <!-- صفحه میز -->
+    <section id="table" class="screen">
+      <div class="table-top">
+        <div id="status" class="status">در انتظار...</div>
+        <button id="btnLeave" class="btn tiny">خروج</button>
+      </div>
+
+      <!-- چیدمان بازیکنان دور میز -->
+      <div class="board">
+        <div class="seat seat-top" data-seat="2"><span class="name"></span><span class="tricks"></span></div>
+        <div class="seat seat-left" data-seat="1"><span class="name"></span><span class="tricks"></span></div>
+        <div class="seat seat-right" data-seat="3"><span class="name"></span><span class="tricks"></span></div>
+        <div class="seat seat-bottom" data-seat="0"><span class="name"></span><span class="tricks"></span></div>
+        <div class="center">
+          <div id="trickArea" class="trick-area"></div>
+          <div id="hakemInfo" class="hakem-info"></div>
+        </div>
+      </div>
+
+      <!-- دست بازیکن -->
+      <div id="hand" class="hand"></div>
+
+      <!-- انتخاب حکم -->
+      <div id="suitPicker" class="suit-picker hidden">
+        <div class="hint">خال حکم را انتخاب کن:</div>
+        <div class="suits">
+          <button class="suit" data-suit="hearts">♥</button>
+          <button class="suit" data-suit="diamonds">♦</button>
+          <button class="suit" data-suit="clubs">♣</button>
+          <button class="suit" data-suit="spades">♠</button>
+        </div>
+      </div>
+
+      <div id="tableMsg" class="msg"></div>
+    </section>
+
+    <!-- صفحه لیدربورد -->
+    <section id="leaderboard" class="screen">
+      <div class="table-top">
+        <h2>🏆 لیدربورد</h2>
+        <button id="btnLbBack" class="btn tiny">بازگشت</button>
+      </div>
+      <ol id="lbList" class="lb-list"></ol>
+    </section>
+
+    <!-- صفحه تاریخچه -->
+    <section id="history" class="screen">
+      <div class="table-top">
+        <h2>📜 تاریخچه بازی‌ها</h2>
+        <button id="btnHistBack" class="btn tiny">بازگشت</button>
+      </div>
+      <ul id="histList" class="hist-list"></ul>
+    </section>
+  </div>
+
+  <script src="app.js"></script>
+</body>
+</html>

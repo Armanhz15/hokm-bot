@@ -1,0 +1,15 @@
+{
+  "name": "hokm-bot",
+  "version": "1.0.0",
+  "private": true,
+  "scripts": {
+    "deploy": "tgcloud push",
+    "migrate": "tgcloud migrate",
+    "status": "tgcloud status",
+    "test": "node test/rules.test.js && node test/logic.test.js && node test/engine.test.js && node test/integration.test.js && node test/wallet_flow.test.js && node test/history.test.js"
+  },
+  "devDependencies": {
+    "@tgcloud/cli": "latest"
+  },
+  "type": "module"
+}
