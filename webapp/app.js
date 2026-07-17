@@ -353,8 +353,10 @@
   }
 
   // ---------- polling ----------
+  let initialLoad = true; // لودینگ فقط برای اولین بارگذاری نشان داده شود
   async function pollOnce() {
-    showLoading(true);
+    const isInitial = initialLoad;
+    if (isInitial) showLoading(true);
     try {
       // بروزرسانی موجودی در لابی
       if (!currentTable) {
@@ -362,7 +364,6 @@
           const balData = await api('get_balance');
           $('#coinBalance').textContent = faNum(balData.balance);
         } catch (_) {}
-        showLoading(false);
         return;
       }
       const data = await api('get_state');
@@ -381,7 +382,8 @@
     } catch (e) {
       // خطای شبکه: نادیده بگیر
     } finally {
-      showLoading(false);
+      // لودینگ فقط بعد از اولین بارگذاری موفق/ناموفق پنهان شود و دیگر تکرار نشود
+      if (isInitial) { showLoading(false); initialLoad = false; }
     }
   }
 
