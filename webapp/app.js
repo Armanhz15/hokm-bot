@@ -68,10 +68,21 @@
       } catch (e) { /* دمو */ }
     }
 
+    // جوین خودکار از روی لینک دعوت (?code=XXXXXX)
+    const urlParams = new URLSearchParams(window.location.search);
+    const inviteCode = urlParams.get('code');
+    if (inviteCode) {
+      $('#codeInput').value = inviteCode;
+      // جوین خودکار بعد از لود شدن دکمه‌ها
+      setTimeout(() => onJoinCode(), 300);
+    }
+
     $('#btnPublic').addEventListener('click', onPublic);
     $('#btnPrivate').addEventListener('click', onPrivate);
     $('#btnBuy').addEventListener('click', onBuy);
     $('#btnJoinCode').addEventListener('click', onJoinCode);
+    $('#btnCopyInvite').addEventListener('click', onCopyInvite);
+    $('#btnShareInvite').addEventListener('click', onShareInvite);
     $('#btnLeave').addEventListener('click', onLeave);
     $('#btnLeaderboard').addEventListener('click', onLeaderboard);
     $('#btnHistory').addEventListener('click', onHistory);
@@ -147,9 +158,50 @@
       const data = await api('create_private');
       currentTable = data.table;
       setMsg('lobbyMsg', 'اتاق ساخته شد. کد: ' + faNum(data.table.code));
+      if (data.inviteLink) showInvite(data.inviteLink);
       enterTable();
     } catch (e) {
       setMsg('lobbyMsg', 'خطا: ' + e.message);
+    }
+  }
+
+  function showInvite(link) {
+    const box = $('#inviteBox');
+    if (!box) return;
+    $('#inviteLink').value = link;
+    box.classList.remove('hidden');
+  }
+
+  function hideInvite() {
+    const box = $('#inviteBox');
+    if (box) box.classList.add('hidden');
+  }
+
+  async function onCopyInvite() {
+    const link = $('#inviteLink').value;
+    try {
+      await navigator.clipboard.writeText(link);
+      setMsg('lobbyMsg', 'لینک کپی شد!');
+    } catch (_) {
+      $('#inviteLink').select();
+      setMsg('lobbyMsg', 'لینک را انتخاب و کپی کنید');
+    }
+  }
+
+  async function onShareInvite() {
+    const link = $('#inviteLink').value;
+    const text = 'بیا با من حکم بازی کن! ' + link;
+    if (window.Telegram && window.Telegram.WebApp) {
+      // تلگرام Mini App: ارسال لینک از طریق دکمه share
+      if (window.Telegram.WebApp.openTelegramLink) {
+        window.Telegram.WebApp.openTelegramLink('https://t.me/share/url?url=' + encodeURIComponent(link) + '&text=' + encodeURIComponent('بیا با من حکم بازی کن! 🃏'));
+      } else {
+        window.Telegram.WebApp.sendData ? window.Telegram.WebApp.sendData(text) : null;
+      }
+    } else if (navigator.share) {
+      try { await navigator.share({ title: 'حکم 🃏', text, url: link }); } catch (_) {}
+    } else {
+      onCopyInvite();
     }
   }
 
@@ -209,9 +261,13 @@
 
   // ---------- رندر وضعیت ----------
   function renderState(data) {
-    const { table, seats, state } = data;
+    const { table, seats, state, isHost, inviteLink } = data;
     currentTable = table;
     mySeat = state ? state.seats.indexOf(myUserId) : -1;
+
+    // نمایش لینک دعوت فقط برای هاست
+    if (isHost && inviteLink) showInvite(inviteLink);
+    else hideInvite();
 
     // صندلی‌ها
     $all('.seat').forEach((el) => {

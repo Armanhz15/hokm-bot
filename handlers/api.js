@@ -84,12 +84,17 @@ module.exports = async function api(ctx) {
       case 'create_private': {
         const wager = parseInt(payload.wager, 10) || 0;
         const t = await createPrivateTable(ctx.db, { userId, wager });
-        return ctx.json({ table: t });
+        const webappUrl = process.env.WEBAPP_URL || '';
+        const inviteLink = webappUrl ? `${webappUrl}?code=${t.code}` : '';
+        return ctx.json({ table: t, inviteLink, isHost: true });
       }
 
       case 'join_private_code': {
         const t = await joinPrivateTable(ctx.db, { userId, code: payload.code });
-        return ctx.json({ table: t });
+        const isHost = t.host_id === userId;
+        const webappUrl = process.env.WEBAPP_URL || '';
+        const inviteLink = webappUrl ? `${webappUrl}?code=${t.code}` : '';
+        return ctx.json({ table: t, inviteLink, isHost });
       }
 
       // ---- وضعیت ----
@@ -98,10 +103,15 @@ module.exports = async function api(ctx) {
         if (!t) return ctx.json({ error: 'no_table' }, 404);
         const seats = await getTableSeats(ctx.db, t.id);
         const loaded = await loadState(ctx.db, t.id);
+        const isHost = t.host_id === userId;
+        const webappUrl = process.env.WEBAPP_URL || '';
+        const inviteLink = webappUrl ? `${webappUrl}?code=${t.code}` : '';
         return ctx.json({
           table: { id: t.id, code: t.code, type: t.type, wager: t.wager, status: t.status },
           seats,
           state: loaded ? loaded.state : null,
+          isHost,
+          inviteLink,
         });
       }
 

@@ -12,6 +12,7 @@ CREATE TABLE tables (
     type TEXT DEFAULT 'public',
     status TEXT DEFAULT 'waiting',
     wager INTEGER DEFAULT 0,
+    host_id INTEGER,
     created_at BIGINT
 );
 

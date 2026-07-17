@@ -56,6 +56,25 @@ h1 { text-align: center; color: var(--accent); margin-top: 24px; }
   font-size: 18px; text-align: center; letter-spacing: 4px;
 }
 
+/* باکس لینک دعوت */
+.invite-box {
+  background: rgba(0,0,0,.25);
+  border-radius: 12px;
+  padding: 12px;
+  margin-top: 12px;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+.invite-title { font-size: 13px; color: var(--accent); text-align: center; }
+.invite-row { display: flex; gap: 8px; }
+.invite-row input {
+  flex: 1; padding: 10px; border-radius: 8px; border: none;
+  font-size: 12px; text-align: center; direction: ltr;
+  background: rgba(255,255,255,.9); color: #222;
+}
+.invite-box .btn.secondary { background: #1976d2; color: #fff; }
+
 .msg { text-align: center; margin-top: 14px; min-height: 20px; color: var(--accent); }
 
 /* میز */
