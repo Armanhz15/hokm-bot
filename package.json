@@ -3,13 +3,15 @@
   "version": "1.0.0",
   "private": true,
   "scripts": {
-    "deploy": "tgcloud push",
-    "migrate": "tgcloud migrate",
-    "status": "tgcloud status",
+    "start": "node index.js",
+    "dev": "node server.js",
     "test": "node test/rules.test.js && node test/logic.test.js && node test/engine.test.js && node test/integration.test.js && node test/wallet_flow.test.js && node test/history.test.js"
+  },
+  "dependencies": {
+    "@supabase/supabase-js": "^2.0.0",
+    "express": "^4.18.0"
   },
   "devDependencies": {
     "@tgcloud/cli": "latest"
-  },
-  "type": "module"
+  }
 }

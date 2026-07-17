@@ -14,19 +14,14 @@ const { getBalance, purchaseWithStars } = require('../lib/wallet');
 const { teamOf } = require('../lib/rules');
 
 async function authUser(ctx) {
+  if (ctx.validatedUser && ctx.validatedUser.id) return ctx.validatedUser.id;
   const initData = (ctx.request.body && ctx.request.body.initData) ||
     (ctx.request.headers && ctx.request.headers['x-init-data']);
   if (!initData) throw new Error('unauthorized');
-  try {
-    const sdk = require('sdk');
-    const u = await sdk.validateInitData(initData);
-    return u.id;
-  } catch (_) {
-    // fallback برای تست لوکال (بدون tgcloud)
-    const userId = parseInt(initData, 10);
-    if (!userId) throw new Error('unauthorized');
-    return userId;
-  }
+  // fallback برای تست لوکال
+  const userId = parseInt(initData, 10);
+  if (!userId) throw new Error('unauthorized');
+  return userId;
 }
 
 // یافتن میز فعال یک کاربر
