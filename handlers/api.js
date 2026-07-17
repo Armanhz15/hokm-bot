@@ -18,10 +18,15 @@ async function authUser(ctx) {
   const initData = (ctx.request.body && ctx.request.body.initData) ||
     (ctx.request.headers && ctx.request.headers['x-init-data']);
   if (!initData) throw new Error('unauthorized');
-  // fallback برای تست لوکال
+  // fallback برای تست لوکال (initData می‌تواند userId عددی یا query string باشد)
   const userId = parseInt(initData, 10);
-  if (!userId) throw new Error('unauthorized');
-  return userId;
+  if (userId) return userId;
+  try {
+    const p = new URLSearchParams(initData);
+    const user = JSON.parse(p.get('user'));
+    if (user && user.id) return user.id;
+  } catch (_) {}
+  throw new Error('unauthorized');
 }
 
 // یافتن میز فعال یک کاربر
