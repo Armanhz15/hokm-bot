@@ -85,16 +85,16 @@ module.exports = async function api(ctx) {
         const wager = parseInt(payload.wager, 10) || 0;
         const t = await createPrivateTable(ctx.db, { userId, wager });
         const webappUrl = process.env.WEBAPP_URL || '';
-        const inviteLink = webappUrl ? `${webappUrl}?code=${t.code}` : '';
-        return ctx.json({ table: t, inviteLink, isHost: true });
+        const inviteLink = webappUrl ? `${webappUrl}?code=${t.code}` : `hokm://join?code=${t.code}`;
+        return ctx.json({ table: t, inviteLink, isHost: true, code: t.code });
       }
 
       case 'join_private_code': {
         const t = await joinPrivateTable(ctx.db, { userId, code: payload.code });
         const isHost = t.host_id === userId;
         const webappUrl = process.env.WEBAPP_URL || '';
-        const inviteLink = webappUrl ? `${webappUrl}?code=${t.code}` : '';
-        return ctx.json({ table: t, inviteLink, isHost });
+        const inviteLink = webappUrl ? `${webappUrl}?code=${t.code}` : `hokm://join?code=${t.code}`;
+        return ctx.json({ table: t, inviteLink, isHost, code: t.code });
       }
 
       // ---- وضعیت ----

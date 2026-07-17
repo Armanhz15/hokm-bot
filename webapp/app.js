@@ -83,6 +83,8 @@
     $('#btnJoinCode').addEventListener('click', onJoinCode);
     $('#btnCopyInvite').addEventListener('click', onCopyInvite);
     $('#btnShareInvite').addEventListener('click', onShareInvite);
+    $('#btnCopyTableInvite').addEventListener('click', onCopyTableInvite);
+    $('#btnShareTableInvite').addEventListener('click', onShareTableInvite);
     $('#btnLeave').addEventListener('click', onLeave);
     $('#btnLeaderboard').addEventListener('click', onLeaderboard);
     $('#btnHistory').addEventListener('click', onHistory);
@@ -158,8 +160,8 @@
       const data = await api('create_private');
       currentTable = data.table;
       setMsg('lobbyMsg', 'اتاق ساخته شد. کد: ' + faNum(data.table.code));
-      if (data.inviteLink) showInvite(data.inviteLink);
       enterTable();
+      if (data.inviteLink) showInvite(data.inviteLink);
     } catch (e) {
       setMsg('lobbyMsg', 'خطا: ' + e.message);
     }
@@ -167,14 +169,16 @@
 
   function showInvite(link) {
     const box = $('#inviteBox');
-    if (!box) return;
-    $('#inviteLink').value = link;
-    box.classList.remove('hidden');
+    const tableBox = $('#tableInviteBox');
+    if (box) { $('#inviteLink').value = link; box.classList.remove('hidden'); }
+    if (tableBox) { $('#tableInviteLink').value = link; tableBox.classList.remove('hidden'); }
   }
 
   function hideInvite() {
     const box = $('#inviteBox');
+    const tableBox = $('#tableInviteBox');
     if (box) box.classList.add('hidden');
+    if (tableBox) tableBox.classList.add('hidden');
   }
 
   async function onCopyInvite() {
@@ -190,18 +194,37 @@
 
   async function onShareInvite() {
     const link = $('#inviteLink').value;
+    shareInvite(link, 'lobbyMsg');
+  }
+
+  async function onCopyTableInvite() {
+    const link = $('#tableInviteLink').value;
+    try {
+      await navigator.clipboard.writeText(link);
+      setMsg('tableMsg', 'لینک کپی شد!');
+    } catch (_) {
+      $('#tableInviteLink').select();
+      setMsg('tableMsg', 'لینک را انتخاب و کپی کنید');
+    }
+  }
+
+  async function onShareTableInvite() {
+    const link = $('#tableInviteLink').value;
+    shareInvite(link, 'tableMsg');
+  }
+
+  function shareInvite(link, msgEl) {
     const text = 'بیا با من حکم بازی کن! ' + link;
     if (window.Telegram && window.Telegram.WebApp) {
-      // تلگرام Mini App: ارسال لینک از طریق دکمه share
       if (window.Telegram.WebApp.openTelegramLink) {
         window.Telegram.WebApp.openTelegramLink('https://t.me/share/url?url=' + encodeURIComponent(link) + '&text=' + encodeURIComponent('بیا با من حکم بازی کن! 🃏'));
-      } else {
-        window.Telegram.WebApp.sendData ? window.Telegram.WebApp.sendData(text) : null;
+      } else if (window.Telegram.WebApp.sendData) {
+        window.Telegram.WebApp.sendData(text);
       }
     } else if (navigator.share) {
-      try { await navigator.share({ title: 'حکم 🃏', text, url: link }); } catch (_) {}
+      navigator.share({ title: 'حکم 🃏', text, url: link }).catch(() => {});
     } else {
-      onCopyInvite();
+      if (msgEl === 'tableMsg') onCopyTableInvite(); else onCopyInvite();
     }
   }
 
